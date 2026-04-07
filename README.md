@@ -196,7 +196,7 @@ Every trade is tracked. As markets resolve, the system measures whether its clas
 
 ---
 
-Built by [@brodyautomates](https://github.com/brodyautomates)
+Built by Govind inspired by BrodyAutomates
 
 ---
 
