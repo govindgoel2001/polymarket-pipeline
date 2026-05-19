@@ -29,10 +29,15 @@ NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "")
 # --- RSS Feeds (fallback) ---
 RSS_FEEDS = [
     "https://news.google.com/rss/search?q=AI+artificial+intelligence&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=bitcoin+crypto&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=stock+market+economy&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=breaking+news&hl=en-US&gl=US&ceid=US:en",
     "https://feeds.feedburner.com/TechCrunch",
     "https://feeds.arstechnica.com/arstechnica/technology-lab",
     "https://www.theverge.com/rss/index.xml",
     "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+    "https://feeds.reuters.com/reuters/businessNews",
+    "https://feeds.reuters.com/reuters/technologyNews",
 ]
 
 # --- Pipeline Settings ---
@@ -40,7 +45,7 @@ DRY_RUN = os.getenv("DRY_RUN", "true").lower() == "true"
 MAX_BET_USD = float(os.getenv("MAX_BET_USD", "25"))
 DAILY_LOSS_LIMIT_USD = float(os.getenv("DAILY_LOSS_LIMIT_USD", "100"))
 EDGE_THRESHOLD = float(os.getenv("EDGE_THRESHOLD", "0.10"))
-NEWS_LOOKBACK_HOURS = 6
+NEWS_LOOKBACK_HOURS = 2
 
 # --- V2 Settings ---
 MAX_VOLUME_USD = float(os.getenv("MAX_VOLUME_USD", "50000000"))
