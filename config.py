@@ -43,8 +43,8 @@ EDGE_THRESHOLD = float(os.getenv("EDGE_THRESHOLD", "0.10"))
 NEWS_LOOKBACK_HOURS = 6
 
 # --- V2 Settings ---
-MAX_VOLUME_USD = float(os.getenv("MAX_VOLUME_USD", "500000"))
-MIN_VOLUME_USD = float(os.getenv("MIN_VOLUME_USD", "1000"))
+MAX_VOLUME_USD = float(os.getenv("MAX_VOLUME_USD", "50000000"))
+MIN_VOLUME_USD = float(os.getenv("MIN_VOLUME_USD", "100"))
 MATERIALITY_THRESHOLD = float(os.getenv("MATERIALITY_THRESHOLD", "0.6"))
 SPEED_TARGET_SECONDS = float(os.getenv("SPEED_TARGET_SECONDS", "5"))
 CLASSIFICATION_MODEL = "claude-haiku-4-5-20251001"
@@ -57,6 +57,7 @@ MARKET_CATEGORIES = [
     "crypto",
     "politics",
     "science",
+    "other",
 ]
 
 # --- Twitter filter keywords (for filtered stream rules) ---
