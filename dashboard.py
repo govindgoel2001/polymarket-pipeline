@@ -62,46 +62,52 @@ def run_scan_cycle():
     state.scanning = True
     state.scan_status = "Scraping news..."
 
-    # Step 1: Scrape news
-    news = scrape_all()
-    state.headlines_found = len(news)
-    state.latest_headlines = [
-        {"headline": n.headline, "source": n.source, "age": f"{n.age_hours():.1f}h"}
-        for n in news[:8]
-    ]
+    try:
+        # Step 1: Scrape news
+        news = scrape_all()
+        state.headlines_found = len(news)
+        state.latest_headlines = [
+            {"headline": n.headline, "source": n.source, "age": f"{n.age_hours():.1f}h"}
+            for n in news[:8]
+        ]
 
-    # Step 2: Fetch markets
-    state.scan_status = "Fetching markets..."
-    all_markets = fetch_active_markets(limit=100)
-    markets = filter_by_categories(all_markets)[:12]
-    state.markets_scanned = len(markets)
-    state.latest_markets = markets
+        # Step 2: Fetch markets
+        state.scan_status = "Fetching markets..."
+        all_markets = fetch_active_markets(limit=100)
+        markets = filter_by_categories(all_markets)[:12]
+        state.markets_scanned = len(markets)
+        state.latest_markets = markets
 
-    # Step 3: Score and detect edge
-    signals = []
-    scores = {}
-    for i, market in enumerate(markets):
-        state.scan_status = f"Scoring [{i + 1}/{len(markets)}] {market.question[:40]}..."
-        relevant = filter_news_for_market(market, news)
-        result = score_market(market, relevant)
-        scores[market.condition_id] = result
+        # Step 3: Score and detect edge
+        signals = []
+        scores = {}
+        for i, market in enumerate(markets):
+            state.scan_status = f"Scoring [{i + 1}/{len(markets)}] {market.question[:40]}..."
+            relevant = filter_news_for_market(market, news)
+            result = score_market(market, relevant)
+            scores[market.condition_id] = result
 
-        headlines_str = "\n".join(n.headline for n in relevant[:5])
-        signal = detect_edge(market, result["confidence"], result["reasoning"], headlines_str)
-        if signal:
-            trade_result = execute_trade(signal)
-            signals.append({
-                "market": market,
-                "score": result,
-                "trade": trade_result,
-            })
-        time.sleep(0.3)
+            headlines_str = "\n".join(n.headline for n in relevant[:5])
+            signal = detect_edge(market, result["confidence"], result["reasoning"], headlines_str)
+            if signal:
+                trade_result = execute_trade(signal)
+                signals.append({
+                    "market": market,
+                    "score": result,
+                    "trade": trade_result,
+                })
+            time.sleep(0.3)
 
-    state.latest_signals = signals
-    state.latest_scores = scores
-    state.signals_found = len(signals)
-    state.trades_executed = len(signals)
-    state.scanning = False
+        state.latest_signals = signals
+        state.latest_scores = scores
+        state.signals_found = len(signals)
+        state.trades_executed = len(signals)
+
+    except Exception as e:
+        state.scan_status = f"Scan error: {type(e).__name__}: {str(e)[:60]}"
+
+    finally:
+        state.scanning = False
     state.scan_status = "Idle — waiting for next cycle"
 
 
@@ -149,6 +155,9 @@ def render_status() -> Panel:
     if state.scanning:
         status_dot = "[yellow]◌[/yellow]"
         status_text = f"{status_dot} SCANNING"
+    elif "error" in state.scan_status.lower():
+        status_dot = "[red]✗[/red]"
+        status_text = f"{status_dot} ERROR"
     elif state.run_number > 0:
         status_dot = "[bright_green]●[/bright_green]"
         status_text = f"{status_dot} ACTIVE"
@@ -230,7 +239,7 @@ def render_scanner() -> Panel:
         s = sig["score"]
         t = sig["trade"]
         signal_questions.add(m.question)
-        edge_pct = f"{s['edge']:.0%}"
+        edge_pct = f"{s.get('edge', abs(s.get('confidence', 0.5) - sig['market'].yes_price)):.0%}"
         side_style = WIN if t["side"] == "YES" else "bright_magenta"
 
         status = t.get("status", "dry_run")

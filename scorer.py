@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 
 import anthropic
 
@@ -8,6 +9,7 @@ import config
 from scraper import NewsItem
 from markets import Market
 
+log = logging.getLogger(__name__)
 
 client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
 
@@ -59,7 +61,7 @@ def score_market(market: Market, news: list[NewsItem]) -> dict:
 
     try:
         response = client.messages.create(
-            model=config.CLAUDE_MODEL,
+            model=config.SCORING_MODEL,
             max_tokens=500,
             temperature=0.2,
             messages=[{"role": "user", "content": prompt}],
@@ -84,10 +86,12 @@ def score_market(market: Market, news: list[NewsItem]) -> dict:
             "relevant_headlines": [],
         }
     except Exception as e:
+        log.warning(f"[scorer] {type(e).__name__}: {e}")
         return {
             "confidence": 0.5,
             "reasoning": f"Scoring error ({type(e).__name__}): {e}",
             "relevant_headlines": [],
+            "edge": 0.0,
         }
 
 

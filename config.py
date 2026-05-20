@@ -29,10 +29,15 @@ NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "")
 # --- RSS Feeds (fallback) ---
 RSS_FEEDS = [
     "https://news.google.com/rss/search?q=AI+artificial+intelligence&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=bitcoin+crypto&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=stock+market+economy&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=breaking+news&hl=en-US&gl=US&ceid=US:en",
     "https://feeds.feedburner.com/TechCrunch",
     "https://feeds.arstechnica.com/arstechnica/technology-lab",
     "https://www.theverge.com/rss/index.xml",
     "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+    "https://feeds.reuters.com/reuters/businessNews",
+    "https://feeds.reuters.com/reuters/technologyNews",
 ]
 
 # --- Pipeline Settings ---
@@ -40,15 +45,15 @@ DRY_RUN = os.getenv("DRY_RUN", "true").lower() == "true"
 MAX_BET_USD = float(os.getenv("MAX_BET_USD", "25"))
 DAILY_LOSS_LIMIT_USD = float(os.getenv("DAILY_LOSS_LIMIT_USD", "100"))
 EDGE_THRESHOLD = float(os.getenv("EDGE_THRESHOLD", "0.10"))
-NEWS_LOOKBACK_HOURS = 6
+NEWS_LOOKBACK_HOURS = 2
 
 # --- V2 Settings ---
-MAX_VOLUME_USD = float(os.getenv("MAX_VOLUME_USD", "500000"))
-MIN_VOLUME_USD = float(os.getenv("MIN_VOLUME_USD", "1000"))
+MAX_VOLUME_USD = float(os.getenv("MAX_VOLUME_USD", "50000000"))
+MIN_VOLUME_USD = float(os.getenv("MIN_VOLUME_USD", "100"))
 MATERIALITY_THRESHOLD = float(os.getenv("MATERIALITY_THRESHOLD", "0.6"))
 SPEED_TARGET_SECONDS = float(os.getenv("SPEED_TARGET_SECONDS", "5"))
 CLASSIFICATION_MODEL = "claude-haiku-4-5-20251001"
-SCORING_MODEL = "claude-sonnet-4-6-20250514"
+SCORING_MODEL = "claude-sonnet-4-6"
 
 # --- Categories to track ---
 MARKET_CATEGORIES = [
@@ -57,6 +62,7 @@ MARKET_CATEGORIES = [
     "crypto",
     "politics",
     "science",
+    "other",
 ]
 
 # --- Twitter filter keywords (for filtered stream rules) ---
